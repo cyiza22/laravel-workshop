@@ -9,7 +9,7 @@
     <h1>Todo Details</h1>
     <p><strong>{{$todo}}</strong></p>
     
-    <a href="{{ route('todos.index') }}">Back to Todo List</a>
+    
     
 </body>
 </html>

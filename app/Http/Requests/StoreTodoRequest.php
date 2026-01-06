@@ -11,7 +11,7 @@ class StoreTodoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class StoreTodoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tittle' => 'required|string|max:25',
+            'title' => 'required|string|max:25',
             'description' => 'nullable|string',
         ];
     }
@@ -32,7 +32,7 @@ class StoreTodoRequest extends FormRequest
         return [
             'title.required' => 'The title field is required.',
             'title.unique' => 'Iri zina barifashe shaka irindi.',
-            'title.max' => 'The title may not be greater than 255 characters.',
+            'title.max' => 'The title may not be greater than 25 characters.',
             'description.string' => 'The description must be a string.',
         ];
     }

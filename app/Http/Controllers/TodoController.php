@@ -38,7 +38,7 @@ class TodoController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirected()->route('todos.index');
+        return redirect()->route('todos.index');
     }
 
     /**
@@ -47,7 +47,7 @@ class TodoController extends Controller
     public function show($id)
     {
         $todo = DB::table('todos')->where('id', $id)->first();
-        return view('todos.show', ['todo' => $tod0]);
+        return view('todos.show', ['todo' => $todo]);
     }
 
     /**
@@ -55,7 +55,7 @@ class TodoController extends Controller
      */
     public function edit($id)
     {
-        $todo = DB::table('todos')->where('id', $todo)->first();
+        $todo = DB::table('todos')->where('id', $id)->first();
         return view('todos.edit', ['todo' => $todo]);
     }
 
@@ -72,6 +72,7 @@ class TodoController extends Controller
             'is_completed' => $request->input('is_completed') ? true : false,
             'updated_at' => now(),
         ]);
+        return redirect()->route('todos.index');
     }
 
     /**
