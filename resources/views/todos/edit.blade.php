@@ -4,9 +4,9 @@
     <title>Edit Todo</title>
 </head>
 <body>
-    <h1>Edit Todo #{{ $id }}</h1>
+    <h1>Edit Todo #{{ $todo }}</h1>
     
-    <form action="{{ route('todos.update', $id) }}" method="POST">
+    <form action="{{ route('todos.update', $todo) }}" method="POST">
         @csrf
         @method('PUT')
         
