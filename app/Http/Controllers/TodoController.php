@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\StoreTodoRequest;
 
 class TodoController extends Controller
 {
@@ -11,7 +13,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        return view('todos.index');
+        $todos = DB::table('todos')->paginate(5);
+        return view('todos.index', ['todos' => $todos]);
     }
 
     /**
@@ -25,40 +28,60 @@ class TodoController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreTodoRequest $request)
     {
-        return redirect()->route('todos.index');
+        DB::table('todos')-> insert([
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'is_completed' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return redirected()->route('todos.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show($todo)
+    public function show($id)
     {
-        return view('todos.show', ['todo' => $todo]);
+        $todo = DB::table('todos')->where('id', $id)->first();
+        return view('todos.show', ['todo' => $tod0]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($todo)
+    public function edit($id)
     {
+        $todo = DB::table('todos')->where('id', $todo)->first();
         return view('todos.edit', ['todo' => $todo]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $todo)
+    public function update(StoreTodoRequest $request, $id)
     {
-        return redirect()->route('todos.show', ['todo' => $todo]);
+        DB::table('todos')
+        ->where('id', $id)
+        ->update([
+            'title' => $request->input('title'),
+            'description' => $request->input('description'),
+            'is_completed' => $request->input('is_completed') ? true : false,
+            'updated_at' => now(),
+        ]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($todo)
+    public function destroy($id)
     {
+        DB::table('todos')
+        ->where('id', $id)
+        ->delete();
         return redirect()->route('todos.index');
     }
 }
