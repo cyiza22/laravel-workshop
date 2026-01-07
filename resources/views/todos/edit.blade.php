@@ -22,12 +22,15 @@
 
         <div>
             <label>Description:</label>
-            <textarea name="description">{{ old('description', $todo->description) }}</textarea>
+            <textarea name="description" value="{{ old('description', $todo->description) }}"></textarea>
+            @error('description')
+                <div>{{ $message }}</div>
+            @enderror
         </div>
 
         <div>
             <label>
-                <input type="checkbox" name="is_completed" {{ old('is_completed', $todo->is_completed) ? 'checked' : '' }}>
+                <input type="checkbox" name="is_completed" value = "{{ old('is_completed', $todo->is_completed) ? 'checked' : '' }}">
                 Completed
             </label>
         </div>
