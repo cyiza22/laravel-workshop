@@ -7,7 +7,17 @@
 </head>
 <body>
     <h1>Todo Details</h1>
-    <p><strong>{{$todo}}</strong></p>
+    <p><strong>Title</strong>
+        {{ $todo->title }}
+    </p>
+    <p><strong>Description</strong>
+        {{ $todo->description }} 
+    </p>
+    <p><strong>Status</strong>
+        {{ $todo->is_completed ? 'Completed' : 'Pending' }}
+    </p>
+    <a href="{{ route('todos.index') }}">Back to Todo List</a>
+    
     
     
     

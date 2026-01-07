@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreTodoRequest;
+use App\Models\Todo;
 
 class TodoController extends Controller
 {
@@ -13,7 +14,9 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $todos = DB::table('todos')->paginate(5);
+        // $todos = DB::table('todos')->paginate(5);
+        // return view('todos.index', ['todos' => $todos]);
+        $todos = Todo::paginate(5);
         return view('todos.index', ['todos' => $todos]);
     }
 
@@ -30,12 +33,18 @@ class TodoController extends Controller
      */
     public function store(StoreTodoRequest $request)
     {
-        DB::table('todos')-> insert([
+        // DB::table('todos')-> insert([
+        //     'title' => $request->input('title'),
+        //     'description' => $request->input('description'),
+        //     'is_completed' => false,
+        //     'created_at' => now(),
+        //     'updated_at' => now(),
+        // ]);
+
+        Todo::create([
             'title' => $request->input('title'),
             'description' => $request->input('description'),
             'is_completed' => false,
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
 
         return redirect()->route('todos.index');
@@ -46,7 +55,9 @@ class TodoController extends Controller
      */
     public function show($id)
     {
-        $todo = DB::table('todos')->where('id', $id)->first();
+        // $todo = DB::table('todos')->where('id', $id)->first();
+        // return view('todos.show', ['todo' => $todo]);
+        $todo = Todo::findOrFail($id);
         return view('todos.show', ['todo' => $todo]);
     }
 
@@ -55,7 +66,9 @@ class TodoController extends Controller
      */
     public function edit($id)
     {
-        $todo = DB::table('todos')->where('id', $id)->first();
+        // $todo = DB::table('todos')->where('id', $id)->first();
+        // return view('todos.edit', ['todo' => $todo]);
+        $todo = Todo::findOrFail($id);
         return view('todos.edit', ['todo' => $todo]);
     }
 
@@ -63,15 +76,21 @@ class TodoController extends Controller
      * Update the specified resource in storage.
      */
     public function update(StoreTodoRequest $request, $id)
+    // {
+    //     DB::table('todos')
+    //     ->where('id', $id)
+    //     ->update([
+    //         'title' => $request->input('title'),
+    //         'description' => $request->input('description'),
+    //         'is_completed' => $request->input('is_completed') ? true : false,
+    //         'updated_at' => now(),
+    //     ]);
     {
-        DB::table('todos')
-        ->where('id', $id)
-        ->update([
-            'title' => $request->input('title'),
-            'description' => $request->input('description'),
-            'is_completed' => $request->input('is_completed') ? true : false,
-            'updated_at' => now(),
-        ]);
+        $todo = Todo::findOrFail($id);
+        $todo->title = $request->input('title');
+        $todo->description = $request->input('description');
+        $todo->is_completed = $request->input('is_completed') ? true : false;
+        $todo->save();
         return redirect()->route('todos.index');
     }
 
@@ -80,9 +99,13 @@ class TodoController extends Controller
      */
     public function destroy($id)
     {
-        DB::table('todos')
-        ->where('id', $id)
-        ->delete();
+        // DB::table('todos')
+        // ->where('id', $id)
+        // ->delete();
+        // return redirect()->route('todos.index');
+
+        $todo = Todo::findOrFail($id);
+        $todo->delete();
         return redirect()->route('todos.index');
     }
 }
