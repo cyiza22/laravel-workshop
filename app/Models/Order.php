@@ -15,23 +15,28 @@ class Order extends Model
         'status',
     ];
 
-    public function items()
+    public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    
-
-    public function getItemsCountAttribute()
+    // Add accessor for total items
+    public function getTotalItemsAttribute()
     {
-        return $this->items->count();
+        return $this->orderItems->count('quantity');
     }
 
-    
+    // Add accessor for total price
     public function getTotalPriceAttribute()
     {
-        return $this->items->sum(function ($item) {
+        return $this->orderItems->sum(function ($item) {
             return $item->unit_price * $item->quantity;
         });
+    }
+
+    // Add method to check if status can be updated
+    public function canUpdateStatus()
+    {
+        return $this->status !== 'delivered';
     }
 }

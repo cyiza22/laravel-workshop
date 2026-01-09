@@ -9,7 +9,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>📦 Order: {{ $order->number }}</h1>
+            <h1>Order: {{ $order->number }}</h1>
             <span class="status-badge status-{{ $order->status }}">
                 {{ ucfirst($order->status) }}
             </span>
@@ -41,19 +41,19 @@
         <div class="order-summary">
             <div class="summary-card">
                 <div class="summary-label">Total Items</div>
-                <div class="summary-value">{{ $order->total_items }}</div>
+                <div class="summary-value">{{ $order->total_items ?? 0 }}</div>
             </div>
-            <div class="summary-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+            <div class="summary-card">
                 <div class="summary-label">Total Price</div>
-                <div class="summary-value">${{ number_format($order->total_price, 2) }}</div>
+                <div class="summary-value">${{ number_format($order->total_price ?? 0, 2) }}</div>
             </div>
         </div>
 
         <!-- Status Update Section -->
         <div class="status-update-section">
             <h3>Update Order Status</h3>
-            @if($order->canUpdateStatus())
-                <form action="{{ route('orders.update-status', $order->id) }}" method="POST" class="status-form">
+            @if($order->status !== 'delivered')
+                <form action="{{ route('orders.updateStatus', $order->id) }}" method="POST" class="status-form">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
@@ -68,7 +68,7 @@
                 </form>
             @else
                 <div class="disabled-notice">
-                    ⚠️ This order has been delivered and cannot be updated.
+                    This order has been delivered and cannot be updated.
                 </div>
             @endif
         </div>
@@ -85,7 +85,7 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($order->orderItems as $item)
+                @forelse($order->orderItems ?? [] as $item)
                     <tr>
                         <td>{{ $item->product_name }}</td>
                         <td>${{ number_format($item->unit_price, 2) }}</td>
@@ -94,7 +94,9 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="4" style="text-align: center; color: #999;">No items in this order yet.</td>
+                        <td colspan="4" style="text-align: center; ">
+                            No items in this order yet.
+                        </td>
                     </tr>
                 @endforelse
             </tbody>
@@ -103,7 +105,7 @@
         <!-- Add Item Form -->
         <div class="form-container">
             <h3>Add New Item to Order</h3>
-            <form action="{{ route('order_items.store', $order->id) }}" method="POST">
+            <form action="{{ route('order_items.store') }}" method="POST">
                 @csrf
                 
                 <input type="hidden" name="order_id" value="{{ $order->id }}">
@@ -112,11 +114,15 @@
                     <label for="product_id">Select Product:</label>
                     <select name="product_id" id="product_id" required>
                         <option value="">-- Select a Product --</option>
-                        @foreach($products as $product)
-                            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                                {{ $product->name }} - ${{ number_format($product->price, 2) }}
-                            </option>
-                        @endforeach
+                        @if(isset($products) && is_iterable($products))
+                            @foreach($products as $product)
+                                <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                                    {{ $product->name }} - ${{ number_format($product->price, 2) }}
+                                </option>
+                            @endforeach
+                        @else
+                            <option value="" disabled>No products available</option>
+                        @endif
                     </select>
                 </div>
 

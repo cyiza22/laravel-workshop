@@ -12,44 +12,54 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
+
     public function index(Request $request)
     {
         $status = $request->query('status');
+        $showDeleted = $request->query('show_deleted', '0');
 
-        $ordersQuery = Order::with('items');
+        $ordersQuery = Order::with('orderItems');
 
-        if ($status) {
+        if ($status && $status!== 'all') {
             $ordersQuery->where('status', $status);
+        }
+
+        // Handle showing deleted orders
+        if ($showDeleted === '1') {
+            $ordersQuery->onlyTrashed(); // Show only soft-deleted orders
         }
 
         $orders = $ordersQuery->paginate(10);
 
         /* ---------- Analytics ---------- */
-
+        // For analytics, we should consider active orders only (not trashed)
         $analytics = [
             'total_orders'    => Order::count(),
-            'pending_orders'  => Order::where('status', 'pending')->count(),
-            'waiting_orders'  => Order::where('status', 'waiting')->count(),
-            'delivered_orders'=> Order::where('status', 'delivered')->count(),
-            'total_price'   => Order::with('items')->get()
+            'pending_orders'  => Order::with('status', 'pending')->count(),
+            'waiting_orders'  => Order::with('status', 'waiting')->count(),
+            'delivered_orders'=> Order::with('status', 'delivered')->count(),
+            'total_price'     => Order::with('orderItems')->get()
                 ->sum(fn ($order) => $order->total_price),
         ];
 
         return view('orders.index', [
-            'orders'     => $orders,
-            'analytics'  => $analytics,
-            'status'     => $status,
+            'orders'        => $orders,
+            'analytics'     => $analytics,
+            'current_filter'=> $status ?: 'all',
+            'show_deleted'  => $showDeleted, 
         ]);
     }
 
     public function show($id)
-    {
-        $order = Order::with('items.product')->findOrFail($id);
+{
+    $order = Order::with('orderItems.product')->findOrFail($id);
+    $products = Product::all(); 
 
-        return view('orders.show', [
-            'order' => $order,
-        ]);
-    }
+    return view('orders.show', [
+        'order' => $order,
+        'products' => $products,
+    ]);
+}
 
     /**
      * Show the form for creating a new resource.
@@ -83,7 +93,7 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateStatus(UpdatedOrderStatusRequest $request, $id)
+    public function updateStatus(UpdateOrderStatusRequest $request, $id)
     {
         $order = Order::findOrFail($id);
 
@@ -93,7 +103,9 @@ class OrderController extends Controller
             ]);
         }
 
-        return redirect()->back();
+        return redirect()->route('orders.show', ['id' => $order->id])
+            ->with('success', 'Order status updated successfully!');
+          
     }
 
     /**

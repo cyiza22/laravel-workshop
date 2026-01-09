@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orders Management</title>
     
+</head>
 <body>
     <div class="container">
-        <h1> Orders Management</h1>
+        <h1>Orders Management</h1>
 
         @if(session('success'))
             <div class="success-message">
@@ -87,22 +88,15 @@
                                 {{ ucfirst($order->status) }}
                             </span>
                         </td>
-                        <td>{{ $order->total_items }} items</td>
-                        <td><strong>${{ number_format($order->total_price, 2) }}</strong></td>
+                        <!-- ADDED: Null-safe operator to prevent errors if accessors fail -->
+                        <td>{{ $order->total_items ?? 0 }} items</td>
+                        <td><strong>${{ number_format($order->total_price ?? 0, 2) }}</strong></td>
                         <td>
                             @if($show_deleted == '1')
                                 <!-- Deleted order actions -->
                                 <form action="{{ route('orders.restore', $order->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     <button type="submit" class="action-btn btn-restore">Restore</button>
-                                </form>
-                                <form action="{{ route('orders.force-destroy', $order->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn btn-delete" 
-                                            onclick="return confirm('Permanently delete this order? This cannot be undone!')">
-                                        Delete Forever
-                                    </button>
                                 </form>
                             @else
                                 <!-- Active order actions -->
@@ -120,11 +114,8 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="empty-state">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
-                            </svg>
-                            <p>No orders found.</p>
+                        <td colspan="6" style="text-align: center">
+                             No orders found.
                         </td>
                     </tr>
                 @endforelse
