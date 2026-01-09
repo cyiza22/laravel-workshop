@@ -4,16 +4,40 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use  App\Models\Order;
+use App\Models\Product;
+use App\Http\Requests\UpdateOrderStatusRequest;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(UpdateOrderStatusRequest $request)
     {
-        $orders =Order::paginate(10);
-        return view('orders.index', ['orders' => $orders]);
+        $status = $request->input('status');
+        $OrderQuery = Order::with('orderItems');
+
+        if ($status) {
+            $OrderQuery->where('status', $status);
+        }
+        $orders = $OrderQuery->paginate(10);
+
+        $analytics = [
+            'total_orders' => Order::count(),
+            'pending_orders' => Order::where('status', 'pending')->count(),
+            'delivered_orders' => Order::where('status', 'delivered')->count(),
+            'waiting_orders' => Order::where('status', 'waiting')->count(),
+            'total_price' => Order::sum(function ($order) {
+                return $order->total_price;
+            }),
+            
+        ];
+
+        return view('orders.index', [
+            'orders' => $orders,
+            'analytics' => $analytics,
+            'status' => $status
+        ]);
     }
 
     /**
@@ -38,7 +62,12 @@ class OrderController extends Controller
     public function show(string $id)
     {
         $order = Order::with('orderItems.product')->findOrFail($id);
-        return view('orders.show', ['order' => $order]);
+        $products = Product::all(); // Get all products for the form
+        
+        return view('orders.show', [
+            'order' => $order,
+            'products' => $products
+        ]);
     }
 
     /**
@@ -46,15 +75,21 @@ class OrderController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function updateStatus(UpdateOrderStatusRequest $request, string $id)
     {
-        //
+        $order = Order::findOrFail($id);
+        $order->status = $request->input('status');
+        $order->save();
+
+        return redirect()->route('orders.show', ['id' => $order->id])
+            ->with('success', 'Order status updated successfully!');
+        
     }
 
     /**
@@ -62,6 +97,20 @@ class OrderController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $order = Order::findOrFail($id);
+        $order->delete();
+        return redirect()->route('orders.index')
+            ->with('success', 'Order deleted successfully!');
+    }
+
+    /**
+     * Restore deleted item.
+     */
+    public function restore(string $id)
+    {
+        $order = Order::withTrashed()->findOrFail($id);
+        $order->restore();
+        return redirect()->route('orders.show', ['id' => $order->id])
+            ->with('success', 'Order restored successfully!');
     }
 }

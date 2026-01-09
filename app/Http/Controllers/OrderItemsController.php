@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\Product;
 
 class OrderItemsController extends Controller
 {
@@ -27,14 +29,24 @@ class OrderItemsController extends Controller
      */
     public function store(Request $request)
     {
+         $validated = $request->validate([
+            'order_id' => 'required|exists:orders,id',
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1'
+        ]);
         $order = Order::findOrFail($request->input('order_id'));
+        $product = Product::findOrFail($request->input('product_id'));
+        
+        
         $order->orderItems()->create([
-            'product_id' => $request->input('product_id'),
-            'product_name' => $request->input('product_name'),
-            'unit_price' => $request->input('unit_price'),
+            'product_id' => $product->id,
+            'product_name' => $product->name,  
+            'unit_price' => $product->price,
             'quantity' => $request->input('quantity')
         ]);
-        return redirect()->route('orders.show', ['id' => $order->id]);
+        
+        return redirect()->route('orders.show', ['id' => $order->id])
+            ->with('success', 'Item added successfully!');
     }
 
     /**
