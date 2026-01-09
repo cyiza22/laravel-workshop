@@ -16,21 +16,22 @@ class UpdateOrderStatusRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            'status' => 'required|in:pending,waiting,delivered',
+            'status' => 'required|in:pending,waiting,delivered'
         ];
     }
 
+    /**
+     * Get custom messages for validator errors.
+     */
     public function messages(): array
     {
         return [
-            'status.required' => 'The status field is required.',
-            'status.in' => 'The selected status is invalid. Allowed values are: pending, waiting, delivered.',
+            'status.required' => 'Please select a status.',
+            'status.in' => 'Invalid status selected.'
         ];
     }
 }

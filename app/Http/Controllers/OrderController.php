@@ -12,25 +12,29 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(UpdateOrderStatusRequest $request)
+    public function index(Request $request)
     {
         $status = $request->input('status');
-        $OrderQuery = Order::with('orderItems');
+        $orderQuery = Order::with('orderItems');
 
         if ($status) {
-            $OrderQuery->where('status', $status);
+            $orderQuery->where('status', $status);
         }
-        $orders = $OrderQuery->paginate(10);
+        
+        $orders = $orderQuery->withCount('orderItems as items_count')
+            ->paginate(10);
+
+        // Calculate total revenue properly
+        $totalRevenue = Order::with('orderItems')->get()->sum(function ($order) {
+            return $order->total_price;
+        });
 
         $analytics = [
             'total_orders' => Order::count(),
             'pending_orders' => Order::where('status', 'pending')->count(),
             'delivered_orders' => Order::where('status', 'delivered')->count(),
             'waiting_orders' => Order::where('status', 'waiting')->count(),
-            'total_price' => Order::sum(function ($order) {
-                return $order->total_price;
-            }),
-            
+            'total_price' => $totalRevenue,
         ];
 
         return view('orders.index', [
@@ -89,7 +93,6 @@ class OrderController extends Controller
 
         return redirect()->route('orders.show', ['id' => $order->id])
             ->with('success', 'Order status updated successfully!');
-        
     }
 
     /**
