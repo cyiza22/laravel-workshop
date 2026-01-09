@@ -3,40 +3,35 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
     use HasFactory, SoftDeletes;
+
     protected $fillable = [
         'number',
-        'status'
+        'status',
     ];
 
-    public function orderItems()
+    public function items()
     {
         return $this->hasMany(OrderItem::class);
     }
-    
-    /**
-     * Calculate total price of the order
-     */
 
+    
+
+    public function getItemsCountAttribute()
+    {
+        return $this->items->count();
+    }
+
+    
     public function getTotalPriceAttribute()
     {
-        return $this->orderItems->sum(function ($item) {
+        return $this->items->sum(function ($item) {
             return $item->unit_price * $item->quantity;
         });
     }
-    /**
-     * Calculate total items in the order
-     */
-
-    public function getTotalItemsAttribute()
-    {
-        return $this->orderItems->sum('quantity');
-    }
-
-    
 }

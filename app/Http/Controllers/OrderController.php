@@ -14,33 +14,40 @@ class OrderController extends Controller
      */
     public function index(Request $request)
     {
-        $status = $request->input('status');
-        $orderQuery = Order::with('orderItems');
+        $status = $request->query('status');
+
+        $ordersQuery = Order::with('items');
 
         if ($status) {
-            $orderQuery->where('status', $status);
+            $ordersQuery->where('status', $status);
         }
-        
-        $orders = $orderQuery->withCount('orderItems as items_count')
-            ->paginate(10);
 
-        // Calculate total revenue properly
-        $totalRevenue = Order::with('orderItems')->get()->sum(function ($order) {
-            return $order->total_price;
-        });
+        $orders = $ordersQuery->paginate(10);
+
+        /* ---------- Analytics ---------- */
 
         $analytics = [
-            'total_orders' => Order::count(),
-            'pending_orders' => Order::where('status', 'pending')->count(),
-            'delivered_orders' => Order::where('status', 'delivered')->count(),
-            'waiting_orders' => Order::where('status', 'waiting')->count(),
-            'total_price' => $totalRevenue,
+            'total_orders'    => Order::count(),
+            'pending_orders'  => Order::where('status', 'pending')->count(),
+            'waiting_orders'  => Order::where('status', 'waiting')->count(),
+            'delivered_orders'=> Order::where('status', 'delivered')->count(),
+            'total_price'   => Order::with('items')->get()
+                ->sum(fn ($order) => $order->total_price),
         ];
 
         return view('orders.index', [
-            'orders' => $orders,
-            'analytics' => $analytics,
-            'status' => $status
+            'orders'     => $orders,
+            'analytics'  => $analytics,
+            'status'     => $status,
+        ]);
+    }
+
+    public function show($id)
+    {
+        $order = Order::with('items.product')->findOrFail($id);
+
+        return view('orders.show', [
+            'order' => $order,
         ]);
     }
 
@@ -63,16 +70,7 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        $order = Order::with('orderItems.product')->findOrFail($id);
-        $products = Product::all(); // Get all products for the form
-        
-        return view('orders.show', [
-            'order' => $order,
-            'products' => $products
-        ]);
-    }
+    
 
     /**
      * Show the form for editing the specified resource.
@@ -85,14 +83,17 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function updateStatus(UpdateOrderStatusRequest $request, string $id)
+    public function updateStatus(UpdatedOrderStatusRequest $request, $id)
     {
         $order = Order::findOrFail($id);
-        $order->status = $request->input('status');
-        $order->save();
 
-        return redirect()->route('orders.show', ['id' => $order->id])
-            ->with('success', 'Order status updated successfully!');
+        if ($order->status !== 'delivered') {
+            $order->update([
+                'status' => $request->status,
+            ]);
+        }
+
+        return redirect()->back();
     }
 
     /**

@@ -31,12 +31,11 @@ Route::delete('/todos/{id}', [TodoController::class, 'destroy'])->name('todos.de
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderItemsController;
 
-// Order Routes
+// Order and OrderItem Routes
 Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
 Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
-Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
-Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');
-Route::post('/orders/{id}/restore', [OrderController::class, 'restore'])->name('orders.restore');
-
-// Order Items Routes
 Route::post('/orders/{id}/items', [OrderItemsController::class, 'store'])->name('order_items.store');
+Route::patch('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
+Route::patch('/orders/{id}/restore', [OrderController::class, 'restore']);
+
