@@ -18,7 +18,8 @@ class OrderController extends Controller
         $status = $request->query('status');
         $showDeleted = $request->query('show_deleted', '0');
 
-        $ordersQuery = Order::with('orderItems');
+        $ordersQuery = Order::where('user_id', auth()::id())
+        ->with('orderItems');
 
         if ($status && $status!== 'all') {
             $ordersQuery->where('status', $status);
@@ -52,12 +53,15 @@ class OrderController extends Controller
 
     public function show($id)
 {
-    $order = Order::with('orderItems.product')->findOrFail($id);
+    $order = Order::where('id', $id)
+    ->where('user_id', auth()::id())
+    ->with('orderItems.product')->findOrFail($id);
     $products = Product::all(); 
 
     return view('orders.show', [
         'order' => $order,
         'products' => $products,
+        'user_id' => Auth::id
     ]);
 }
 
