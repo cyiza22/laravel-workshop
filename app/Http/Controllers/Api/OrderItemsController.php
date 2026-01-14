@@ -5,14 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Http\Resources\OrderItemResource;
+use App\Models\Order;
 
 class OrderItemsController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, $orderId)
     {
+        $order = $request->user()->orders()->findOrFail($orderId);
         return OrderItemResource::collection($order->orderItems()->paginate(10));
     }
 

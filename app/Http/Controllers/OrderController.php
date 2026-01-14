@@ -7,56 +7,30 @@ use  App\Models\Order;
 use App\Models\Product;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Services\OrderService;
+
 
 
 class OrderController extends Controller
 {
+
+    public function __construct(protected OrderService $orderService)
+    {
+    }
     /**
      * Display a listing of the resource.
      */
 
     public function index(Request $request)
 {
-    $status = $request->query('status');
-    $showDeleted = $request->query('show_deleted', '0');
-
-    $ordersQuery = Order::where('user_id', auth()->id())
-        ->with('orderItems')
-        ->withCount('orderItems');
-
-    if ($status && $status !== 'all') {
-        $ordersQuery->where('status', $status);
-    }
-
-    if ($showDeleted === '1') {
-        $ordersQuery->onlyTrashed();
-    }
-
-    $orders = $ordersQuery->paginate(10);
-    $totalPrice = Order::where('user_id', auth()->id())
-        ->with('orderItems')
-        ->get()
-        ->sum(function ($order) {
-            return $order->orderItems->sum(function ($item) {
-                return $item->unit_price * $item->quantity;
-            });
-        });
-
-    $analytics = [
-        'total_orders'     => Order::where('user_id', auth()->id())->count(),
-        'pending_orders'   => Order::where('user_id', auth()->id())->where('status', 'pending')->count(),
-        'waiting_orders'   => Order::where('user_id', auth()->id())->where('status', 'waiting')->count(),
-        'delivered_orders' => Order::where('user_id', auth()->id())->where('status', 'delivered')->count(),
-        'total_price'    => $totalPrice,
-        
-    ];
-
+    $data = $this->orderService->fetchAll($request, auth()->id());
     return view('orders.index', [
-        'orders' => $orders,
-        'analytics' => $analytics,
-        'current_filter' => $status ?: 'all',
-        'show_deleted' => $showDeleted,
+        'orders' => $data['orders'],
+        'analytics' => $data['analytics'],
+        'current_filter' => $data['status'],
+        'show_deleted' => $data['show_deleted'],
     ]);
+    
 }
 
     public function show($id)
