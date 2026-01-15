@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/orders', [OrderController::class , 'index']);
     Route::post('/orders', [OrderController::class , 'store']);
+    Route::put('/orders/{order}', [OrderController::class , 'update']);
     Route::delete('/orders/{order}', [OrderController::class , 'destroy']);
     Route::get('/orders/{order}/items', [OrderItemsController::class, 'index']);
 });

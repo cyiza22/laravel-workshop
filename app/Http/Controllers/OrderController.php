@@ -83,16 +83,17 @@ class OrderController extends Controller
      */
     public function updateStatus(UpdateOrderStatusRequest $request, $id)
     {
-        $order = Order::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        // $order = Order::where('id', $id)
+        //     ->where('user_id', auth()->id())
+        //     ->firstOrFail();
 
-        if ($order->status !== 'delivered') {
-            $order->update([
-                'status' => $request->status,
-            ]);
-        }
+        // if ($order->status !== 'delivered') {
+        //     $order->update([
+        //         'status' => $request->status,
+        //     ]);
+        // }
 
+        $order = $this->authorize('update', Order::findOrFail($id));
         return redirect()->route('orders.show', ['id' => $order->id])
             ->with('success', 'Order status updated successfully!');
           
@@ -103,9 +104,10 @@ class OrderController extends Controller
      */
     public function destroy(string $id)
     {
-        $order = Order::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->firstOrFail();
+        // $order = Order::where('id', $id)
+        //     ->where('user_id', auth()->id())
+        //     ->firstOrFail();
+        $order = $this->authorize('delete', Order::findOrFail($id));
 
         $order->delete();
 

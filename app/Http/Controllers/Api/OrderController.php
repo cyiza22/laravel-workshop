@@ -63,12 +63,20 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // public function update(Request $request, string $id)
+    // {
+    //     $order = $request->user()->orders()->findOrFail($id);
+
+    //     $this->orderService->updateStatus($order, $request->all());
+
+    //     return new OrderResource($order->fresh());
+    // }
+
     public function update(Request $request, string $id)
     {
-        $order = $request->user()->orders()->findOrFail($id);
-
+        $order = Order::findOrFail($id);
+        $this->authorize('update', $order);
         $this->orderService->updateStatus($order, $request->all());
-
         return new OrderResource($order->fresh());
     }
 
@@ -89,12 +97,23 @@ class OrderController extends Controller
     // }
 
     //using action to delete order
-    public function destroy(Request $request, string $id, DeleteOrderAction $action)
+    // public function destroy(Request $request, string $id, DeleteOrderAction $action)
+    // {
+    //     $order = $request->user()->orders()->findOrFail($id);
+    //     $action->handle($order);
+    //     return response()->json([
+    //         'message' => 'Order deleted successfully.'
+    //     ], 200);
+    // }
+
+    public function destroy(string $id)
     {
-        $order = $request->user()->orders()->findOrFail($id);
-        $action->handle($order);
+        $order = Order::findOrFail($id);
+        $this->authorize('delete', $order);
+        $order->delete();
         return response()->json([
             'message' => 'Order deleted successfully.'
         ], 200);
+      
     }
 }

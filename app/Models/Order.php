@@ -13,6 +13,8 @@ class Order extends Model
     protected $fillable = [
         'number',
         'status',
+        'user_id',
+        'slug',
     ];
 
     public function orderItems()
