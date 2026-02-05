@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\order;
 use App\Notifications\OrderCreatedNotification;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 class OrderObserver
 {
@@ -33,11 +34,15 @@ class OrderObserver
     /**
      * Handle the order "updated" event.
      */
-    public function updated(order $order): void
+    public function delivered(NotificationAuthService $notificationAuthService, Order $order)
     {
-        //
+        $order->update(['status' => 'delivered']);
+        $notificationAuthService->getAccessToken($order);
+        
+                return response()->json([
+                    'message' => 'Order completed'
+                ]);
     }
-
     /**
      * Handle the order "deleted" event.
      */

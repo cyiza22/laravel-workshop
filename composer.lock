@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d4f1942359a779a19134112d07c3872",
+    "content-hash": "5217390ffef6aed4f8b84173d610f812",
     "packages": [
         {
             "name": "brick/math",
@@ -4188,6 +4188,53 @@
                 "source": "https://github.com/ramsey/uuid/tree/4.9.2"
             },
             "time": "2025-12-14T04:43:48+00:00"
+        },
+        {
+            "name": "rwandabuild/murugo_api_auth",
+            "version": "v2.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RWBuild/package_MurugoAuth_API-Laravel.git",
+                "reference": "3a9d95c25545d5bc8e9263aa3bed4cf36f12c858"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RWBuild/package_MurugoAuth_API-Laravel/zipball/3a9d95c25545d5bc8e9263aa3bed4cf36f12c858",
+                "reference": "3a9d95c25545d5bc8e9263aa3bed4cf36f12c858",
+                "shasum": ""
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "MurugoAuth": "RwandaBuild\\MurugoAuth\\Facades\\MurugoAuth"
+                    },
+                    "providers": [
+                        "RwandaBuild\\MurugoAuth\\MurugoAuthServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "RwandaBuild\\MurugoAuth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Uwe Aime Van",
+                    "email": "uweaime@gmail.com"
+                }
+            ],
+            "description": "Package that will use Murugo auth to all 3rd party laravel projects with only API structure",
+            "support": {
+                "issues": "https://github.com/RWBuild/package_MurugoAuth_API-Laravel/issues",
+                "source": "https://github.com/RWBuild/package_MurugoAuth_API-Laravel/tree/v2.6.2"
+            },
+            "time": "2023-10-09T08:16:35+00:00"
         },
         {
             "name": "symfony/console",

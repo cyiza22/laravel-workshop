@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\auth\AuthController;
 use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\OrderItemsController;
+use App\Http\Controllers\Api\MurugoAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,7 @@ use App\Http\Controllers\Api\OrderItemsController;
 //public routes
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/murugo-login', [MurugoAuthController::class, 'loginWithMurugo']);
 
 //prottected routes
 Route::middleware('auth:api')->group(function () {
@@ -30,4 +32,6 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/orders/{order}', [OrderController::class , 'update']);
     Route::delete('/orders/{order}', [OrderController::class , 'destroy']);
     Route::get('/orders/{order}/items', [OrderItemsController::class, 'index']);
+    Route::post('/orders/{order}/completed', [OrderController::class, 'delivered']);
 });
+

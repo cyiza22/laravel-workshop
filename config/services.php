@@ -31,4 +31,21 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'notification' => [
+        'base_url'  => env('NOTIFICATION_BASE_URL'),
+        'client_id' => env('NOTIFICATION_CLIENT_ID'),
+        'client_secret' => env('NOTIFICATION_CLIENT_SECRET'),
+    ],
+
+    'murugo' => [
+        'client_id' => env('MURUGO_CLIENT_ID'),
+        'client_secret' => env('MURUGO_CLIENT_SECRET'),
+        'redirect' => env('APP_REDIRECT_URL'),
+        'murugo_url' => env('MURUGO_URL'),
+        'murugo_app_key' => env('MURUGO_APP_KEY'),
+        'disable_user_session' => true, 
+    ],
+
+    
+
 ];

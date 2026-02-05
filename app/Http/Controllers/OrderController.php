@@ -8,13 +8,14 @@ use App\Models\Product;
 use App\Http\Requests\UpdateOrderStatusRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Services\OrderService;
+use App\Services\NotificationAuthService;
 
 
 
 class OrderController extends Controller
 {
 
-    public function __construct(protected OrderService $orderService)
+    public function __construct(protected OrderService $orderService, protected NotificationAuthService $notificationAuthService)
     {
     }
     /**
@@ -129,5 +130,15 @@ class OrderController extends Controller
 
         return redirect()->route('orders.show', ['id' => $order->id])
             ->with('success', 'Order restored successfully!');
+    }
+
+    public function delivered(NotificationAuthService $notificationAuthService, Order $order)
+    {
+        $order->update(['status' => 'delivered']);
+        // $notificationAuthService->getAccessToken($order);
+        
+                return response()->json([
+                    'message' => 'Order completed'
+                ]);
     }
 }

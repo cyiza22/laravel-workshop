@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\MurugoAuthController;
 use App\Http\Controllers\OrderItemsController;
 
 /*
@@ -19,6 +20,10 @@ use App\Http\Controllers\OrderItemsController;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+Route::get('/redirect-toMurugo', [MurugoAuthController::class, 'redirectToMurugo'])->name('murugo.redirect');
+Route::get('/murugo-callback', [MurugoAuthController::class, 'murugoCallback'])->name('murugo.callback');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
