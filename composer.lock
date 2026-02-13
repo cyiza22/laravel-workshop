@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5217390ffef6aed4f8b84173d610f812",
+    "content-hash": "96d4c8db353d900b4668de76cf951f5d",
     "packages": [
         {
             "name": "brick/math",
@@ -1237,6 +1237,76 @@
                 "source": "https://github.com/kakaprodo/custom-data/tree/v2.3.53"
             },
             "time": "2025-08-14T16:45:01+00:00"
+        },
+        {
+            "name": "ladumor/one-signal",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shailesh-ladumor/one-signal.git",
+                "reference": "47cfafa2e6fa5fba61eda832d62942dc518a289e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shailesh-ladumor/one-signal/zipball/47cfafa2e6fa5fba61eda832d62942dc518a289e",
+                "reference": "47cfafa2e6fa5fba61eda832d62942dc518a289e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "illuminate/support": ">=8.0",
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.0",
+                "phpunit/phpunit": "^9.6"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "OneSignal": "Ladumor\\OneSignal\\OneSignal"
+                    },
+                    "providers": [
+                        "\\Ladumor\\OneSignal\\OneSignalServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Ladumor\\OneSignal\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shailesh Ladumor",
+                    "email": "shaileshmladumor@gmail.com"
+                }
+            ],
+            "description": "Laravel Wrapper for OneSignal.",
+            "keywords": [
+                "laravel",
+                "notification",
+                "one-signal",
+                "php",
+                "push"
+            ],
+            "support": {
+                "issues": "https://github.com/shailesh-ladumor/one-signal/issues",
+                "source": "https://github.com/shailesh-ladumor/one-signal/tree/v2.0.2"
+            },
+            "funding": [
+                {
+                    "url": "https://www.buymeacoffee.com/ladumor",
+                    "type": "custom"
+                }
+            ],
+            "time": "2026-01-31T06:06:15+00:00"
         },
         {
             "name": "laravel/framework",
@@ -3195,6 +3265,59 @@
                 }
             ],
             "time": "2024-09-09T07:06:30+00:00"
+        },
+        {
+            "name": "onesignal/onesignal-php-api",
+            "version": "2.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OneSignal/onesignal-php-api.git",
+                "reference": "d1465f09bddaed92b7cd3bcfc0a19607fccd8f58"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OneSignal/onesignal-php-api/zipball/d1465f09bddaed92b7cd3bcfc0a19607fccd8f58",
+                "reference": "d1465f09bddaed92b7cd3bcfc0a19607fccd8f58",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "guzzlehttp/guzzle": "^7.3",
+                "guzzlehttp/psr7": "^1.7 || ^2.0",
+                "php": "^7.3 || ^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "onesignal\\client\\": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "OneSignal developers",
+                    "homepage": "https://onesignal.com"
+                }
+            ],
+            "description": "A powerful way to send personalized messages at scale and build effective customer engagement strategies. Learn more at onesignal.com",
+            "homepage": "https://onesignal.com",
+            "keywords": [
+                "api",
+                "onesignal",
+                "php",
+                "rest",
+                "sdk"
+            ],
+            "support": {
+                "issues": "https://github.com/OneSignal/onesignal-php-api/issues",
+                "source": "https://github.com/OneSignal/onesignal-php-api/tree/v2.2.1"
+            },
+            "time": "2025-06-04T19:59:59+00:00"
         },
         {
             "name": "paragonie/constant_time_encoding",

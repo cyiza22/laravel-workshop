@@ -8,10 +8,12 @@
         "php": "^8.1",
         "guzzlehttp/guzzle": "^7.10",
         "kakaprodo/custom-data": "^2.3",
+        "ladumor/one-signal": "^2.0",
         "laravel/framework": "^10.10",
         "laravel/passport": "^12.4",
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
+        "onesignal/onesignal-php-api": "^2.2",
         "rwandabuild/murugo_api_auth": "^2.6"
     },
     "require-dev": {

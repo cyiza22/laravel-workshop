@@ -2,10 +2,11 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\auth\AuthController;
 use App\Http\Controllers\Api\OrderController;
-use App\Http\Controllers\Api\OrderItemsController;
+use App\Http\Controllers\Api\auth\AuthController;
+use App\Http\Controllers\Api\OneSignalController;
 use App\Http\Controllers\Api\MurugoAuthController;
+use App\Http\Controllers\Api\OrderItemsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,5 +34,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/orders/{order}', [OrderController::class , 'destroy']);
     Route::get('/orders/{order}/items', [OrderItemsController::class, 'index']);
     Route::post('/orders/{order}/completed', [OrderController::class, 'delivered']);
+
+    
 });
 

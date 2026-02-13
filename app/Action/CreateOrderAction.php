@@ -17,6 +17,7 @@ class CreateOrderAction extends CustomActionBuilder
             'number' => $data->number,
             'status' => $data->status,
             'user_id' => $data->user_id,
+            
         ]);
     }
 }

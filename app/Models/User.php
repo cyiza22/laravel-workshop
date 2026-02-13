@@ -21,10 +21,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'murugo_user_id',
+        'onesignal_player_id',
         'name',
         'email',
         'phone',
         'password',
+        
     ];
 
     /**

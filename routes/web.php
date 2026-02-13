@@ -36,6 +36,7 @@ Route::middleware('auth')->group(function () {
 
     // Order routes - protected by authentication
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::post('/orders', [OrderController::class, 'create'])->name('orders.create');
     Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
     Route::delete('/orders/{id}', [OrderController::class, 'destroy'])->name('orders.destroy');

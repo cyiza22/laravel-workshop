@@ -66,6 +66,15 @@
             </label>
         </form>
 
+        <form action="{{ route('orders.store') }}" method="POST">
+            @csrf
+            
+
+            <input type="hidden" name="product_id" value="1"> 
+            
+            <button type="submit" class="btn btn-primary">Create Order</button>
+        </form>
+
         <!-- Orders Table -->
         <table>
             <thead>

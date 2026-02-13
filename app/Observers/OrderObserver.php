@@ -4,14 +4,19 @@ namespace App\Observers;
 
 use App\Models\order;
 use App\Notifications\OrderCreatedNotification;
-use Illuminate\Support\Str;
+use App\Services\NotificationAuthService;
+use App\Services\OneSignalService;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 
 class OrderObserver
 {
     /**
      * automatically set the slug value when an order is being created.
      */
+
+    public function __construct(protected OneSignalService $oneSignalService)
+    {}
 
     public function creating(Order $order): void
     {
@@ -25,9 +30,21 @@ class OrderObserver
     /**
      * Handle the order "created" event.
      */
-    public function created(order $order): void
+    
+    public function created(Order $order): void
     {
-        $order->user->notify(new OrderCreatedNotification($order)
+        // $order->user->notify(new OrderCreatedNotification($order)
+        // );
+        $user = $order->user;
+
+        if (!$user || !$user->onesignal_player_id) {
+            return;
+        }
+
+        $this->oneSignalService->sendToUser(
+            $user->onesignal_player_id,
+            'Order Created',
+            "Your order #{$order->id} was created"
         );
     }
 

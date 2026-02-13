@@ -55,7 +55,8 @@ class OrderController extends Controller
      */
     public function create()
     {
-        //
+        $products = Product::all();
+        return view('orders.create', compact('products'));
     }
 
     /**
@@ -63,8 +64,20 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        //
-    }
+        $request->validate([
+        'product_id' => 'required|exists:products,id',
+        ]);
+
+        // This save operation triggers OrderObserver::created()
+        $order = Order::create([
+            'user_id' => auth()->id(),
+            'product_id' => $request->product_id,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('orders.show', $order->id)
+            ->with('success', 'Order placed! OneSignal notification sent.');
+        }
 
     /**
      * Display the specified resource.
