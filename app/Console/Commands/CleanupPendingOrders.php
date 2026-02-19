@@ -34,7 +34,7 @@ class CleanupPendingOrders extends Command
             ->doesntHave('items')
             ->delete();
 
-        this->info('Old pending orders cleaned up successfully.');
+        $this->info('Old pending orders cleaned up successfully.');
 
     }
 }

@@ -11,7 +11,7 @@ class CreateOrderData extends CustomData
         return [
             'number' => $this->property()->string(),
             'status' => $this->property()->string(),
-            'user_id' => $this->property()->integer(),
+            'user_id' => $this->property()->int(),
         ];
     }
 

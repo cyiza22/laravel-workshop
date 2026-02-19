@@ -21,7 +21,7 @@ class OrderPolicy
      */
     public function view(User $user, order $order): bool
     {
-        //
+       // 
     }
 
     /**
