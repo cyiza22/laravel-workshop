@@ -8,9 +8,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\userResource;
 use App\Models\Order;
+use App\Services\NotificationAuthService;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -84,10 +86,19 @@ class OrderController extends Controller
 
         // 3. Send to Service 2 (The Notification Service)
         // IMPORTANT: Check your Service 2 Port (e.g., 8001)
-        $response = Http::withHeaders([
-            'Accept' => 'application/json',
-        ])->post('http://127.0.0.1:8080', $data);
+        // $response = Http::withHeaders([
+        //     'Accept' => 'application/json',
+        // ])->post('http://127.0.0.1:8080', $data);
+        // Log::info('Service 2 Response:', $response->json() ?? ['raw' => $response->body()]);
         return new OrderResource($order->fresh());
+    }
+
+    public function delivered(NotificationAuthService $notificationAuthService, Order $order)
+    {
+        $order->update(['status' => 'delivered']);
+        $notificationAuthService->getAccessToken($order); 
+
+        return response()->json(['message' => 'Order completed']);
     }
 
     /**

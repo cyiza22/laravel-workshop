@@ -11,9 +11,9 @@ class NotificationAuthService
     public function getAccessToken(Order $order)
     {
        
-        $response = Http::asForm()
-        ->withHeaders([
+        $response = Http::withHeaders([
             'Accept' => 'application/json',
+            'X-SERVICE-KEY' => config('services.notification.client_secret'),
         ])
         ->post(
             config('services.notification.base_url') . '/api/orders/delivered',
@@ -22,12 +22,12 @@ class NotificationAuthService
                 // 'client_id'     => config('services.notification.client_id'),
                 // 'client_secret' => config('services.notification.client_secret'),
                 // 'scope'         => '',
-
+                
             
-            'order_id' =>$order->id,
-            'order_number' => $order->number,
-            'user_email'   => $order->user->email,
-            'user_name'    => $order->user->name,
+                'order_id' =>$order->id,
+                'order_number' => $order->number,
+                'user_email'   => $order->user->email,
+                'user_name'    => $order->user->name,
             
             ]
         );
